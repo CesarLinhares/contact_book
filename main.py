@@ -1,0 +1,1 @@
+# Rodar o APP e o FastAPI
