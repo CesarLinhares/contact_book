@@ -7,8 +7,3 @@
 |Deletar            |Lista de contato por letra|
 |                   |Editar                    |
 
-
-
-
-
-

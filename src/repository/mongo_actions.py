@@ -12,8 +12,8 @@ class RepositoryMongo(IMongo):
     database: Database = connection.contact_book
     collection: Collection = database.contacts
 
-    def delete(self, _id: str) -> bool:
-        return self.collection.delete_one({'_id': _id})
+    def delete(self, _id: str, active: dict) -> bool:
+        return self.collection.update_one({'_id': _id})
 
     def register(self, item: dict) -> bool:
         return self.collection.insert_one(item)
