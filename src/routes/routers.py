@@ -1,10 +1,16 @@
+
 from fastapi import APIRouter
+
+from src.core.contact_model import ContactModel
+from src.services.services import RegisterContact
 
 route = APIRouter(prefix="/v1")
 
 
 @route.post("/register")
-def register():
+def register(contact: ContactModel):
+    service_register = RegisterContact()
+    service_register.register_contact(contact.dict())
     return {"Mensagem": "Rota de registro"}
 
 
@@ -36,3 +42,4 @@ def edit_contact(_id):
 @route.delete("/remove/{_id}")
 def remove_contact(_id):
     return {"Mensagem": f"Rota para excluir um contato pelo {_id}"}
+
