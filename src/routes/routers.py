@@ -2,9 +2,7 @@
 from fastapi import APIRouter
 
 from src.core.contact_model import ContactModel
-from src.services.remove_contact import RemoveContact
-from src.services.detail import Detail
-from src.services.services import RegisterContact
+from src.services.register_contact import RegisterContact
 
 route = APIRouter(prefix="/v1")
 
@@ -12,8 +10,7 @@ route = APIRouter(prefix="/v1")
 @route.post("/register")
 def register(contact: ContactModel):
     service_register = RegisterContact()
-    service_register.register_contact(contact.dict())
-    return {"Mensagem": "Rota de registro"}
+    return service_register.register_contact(contact.dict())
 
 
 @route.get("/contacts")
@@ -37,8 +34,9 @@ def count_contacts_and_count_number_type_phone():
 
 
 @route.put("/edit/{_id}")
-def edit_contact(_id):
-    return {"Mensagem": f"Rota para editar um contato pelo {_id}"}
+def edit_contact(updates: ContactModel):
+
+    return {"Mensagem": f"Rota para editar um contato pelo"}
 
 
 @route.delete("/remove/{_id}")
