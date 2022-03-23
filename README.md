@@ -1,13 +1,14 @@
 # Contacts Book
 
-|Cesar|João|
-|-----|----|
+|Cesar              |João                      |
+|-------------------|--------------------------|
+|Detalhes do contato|Registro                  |
+|Contagem           |Listagem de contato       |
+|Deletar            |Lista de contato por letra|
+|                   |Editar                    |
 
-* Registro
-* Listagem de contato
-* Detalhes do contato
-* Contagem
-* Lista de contato por letra
-* Editar
-* Deletar
-* Mongo e Redis
+
+
+
+
+
