@@ -19,7 +19,7 @@ class RepositoryMongo(IMongo):
         return bool(self.collection.insert_one(item))
 
     def update(self, _id: str, item: dict) -> bool:
-        return bool(self.collection.update_one({'_id': _id}, item))
+        return bool(self.collection.update_one({'_id': _id}, {'$set': item}))
 
     def find_one(self, _id: str) -> dict:
         return self.collection.find_one({'_id': _id})

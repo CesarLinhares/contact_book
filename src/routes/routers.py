@@ -2,7 +2,9 @@
 from fastapi import APIRouter
 
 from src.core.contact_model import ContactModel
+from src.services.detail import Detail
 from src.services.register_contact import RegisterContact
+from src.services.remove_contact import RemoveContact
 
 route = APIRouter(prefix="/v1")
 
