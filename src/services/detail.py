@@ -1,7 +1,7 @@
-from src.repository.get_contact_detail import ContactDetail
+from src.repository.mongo_actions import RepositoryMongo
 
 
 class Detail:
 
     def get_detail(self, _id: str):
-        return ContactDetail().get_contact_detail(_id)
+        return RepositoryMongo().find_one(_id)
