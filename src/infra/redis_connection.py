@@ -4,11 +4,11 @@ from src.infra.connection_links import user
 
 class RedisConnection:
     connection = None
-    connection_link = user.get('mongo_link')
+    connection_link = user.get('redis_link')
 
     @classmethod
     def get_connection(cls):
         if not cls.connection:
-            cls.connection = Redis(cls.connection_link)
+            cls.connection = Redis.from_url(cls.connection_link)
 
         return cls.connection

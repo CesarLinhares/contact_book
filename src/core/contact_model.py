@@ -11,5 +11,6 @@ class Phone(BaseModel):
 class ContactModel(BaseModel):
     email: str
     address: str
+    firstName: str
     lastName: str
     phoneList: List[Phone]
