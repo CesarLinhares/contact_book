@@ -2,9 +2,11 @@
 from fastapi import APIRouter
 
 from src.core.contact_model import ContactModel
+from src.services.detail import Detail
 from src.services.list_all_contacts import ListAllContacts
 from src.services.list_contacts_by_letter import ListContactsByLetter
 from src.services.register_contact import RegisterContact
+from src.services.remove_contact import RemoveContact
 from src.services.update_contact import UpdateContact
 
 route = APIRouter(prefix="/v1")

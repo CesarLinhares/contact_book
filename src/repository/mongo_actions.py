@@ -30,4 +30,4 @@ class RepositoryMongo(IMongo):
         return list(self.collection.find({'active': True}))
 
     def find_by_letter(self, letter: str) -> list:
-        return list(self.collection.find({"firstName": {"$regex": f"^{letter}"}}))
+        return list(self.collection.find({"firstName": {"$regex": f"^[{letter.upper()}{letter.lower()}]"}}))
