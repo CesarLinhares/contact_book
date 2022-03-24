@@ -27,7 +27,7 @@ class RegisterContact:
 
     def _update_deleted_contact(self, contact: dict) -> bool:
         clean_redis = self.redis_repository.delete(contact.get('_id'))
-        update_mongo = self.mongo_repository.update(contact.get('_id'), {'active': True})
+        update_mongo = self.mongo_repository.update(contact.get('_id'), contact)
         return clean_redis and update_mongo
 
     def register_contact(self, contact: dict) -> dict:
@@ -44,5 +44,3 @@ class RegisterContact:
             return message
         except:
             return {'status': self.status.get(False)}
-
-

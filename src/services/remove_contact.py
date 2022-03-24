@@ -8,11 +8,13 @@ class RemoveContact:
     redis_repository = RepositoryRedis()
 
     def deleted(self, _id: str):
-        active_false = RepositoryMongo().update(_id, {"active": False})
-        insert_redis = RepositoryRedis().register(_id)
-        deu_bom = active_false and insert_redis
+        active_false = self.mongo_repository.update(_id, {"active": False})
+        insert_redis = self.redis_repository.register(_id)
+        deletion_status = active_false and insert_redis
+        
         response = {
             True: Status.success.value,
             False: Status.error.value
         }
-        return {"status": response[deu_bom]}
+        
+        return {"status": response.get(deletion_status)}

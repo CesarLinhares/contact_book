@@ -9,7 +9,7 @@ class RepositoryRedis(IRedis):
     connection: Redis = connection_infra.get_connection()
 
     def delete(self, key: str) -> bool:
-        return bool(self.delete(key))
+        return bool(self.connection.delete(key))
 
     def register(self, key: str) -> bool:
         return self.connection.set(key, 1)
