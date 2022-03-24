@@ -13,19 +13,21 @@ class RepositoryMongo(IMongo):
     collection: Collection = database.contacts
 
     def delete(self, _id: str) -> bool:
-        return bool(self.collection.delete_one({'_id': _id}))
+        deleted = self.collection.delete_one({'_id': _id})
+        return bool(int(deleted.deleted_count))
 
     def register(self, item: dict) -> bool:
         return bool(self.collection.insert_one(item))
 
     def update(self, _id: str, item: dict) -> bool:
-        return bool(self.collection.update_one({'_id': _id}, item))
+        update = self.collection.update_one({'_id': _id}, {'$set': item})
+        return bool(int(update.modified_count))
 
     def find_one(self, _id: str) -> dict:
         return self.collection.find_one({'_id': _id})
 
     def find_all(self) -> list:
-        return self.collection.find()
+        return list(self.collection.find({'active': True}))
 
     def find_by_letter(self, letter: str) -> list:
-        return self.collection.find({})     # TODO: Fazer filtro de busca por letra
+        return list(self.collection.find({"firstName": {"$regex": f"^{letter}"}}))
