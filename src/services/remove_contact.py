@@ -13,8 +13,8 @@ class RemoveContact:
         deletion_status = active_false and insert_redis
         
         response = {
-            True: Status.success.value,
-            False: Status.error.value
+            True: Status.success,
+            False: Status.error
         }
         
         return {"status": response.get(deletion_status)}

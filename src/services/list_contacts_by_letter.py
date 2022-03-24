@@ -16,6 +16,8 @@ class ListContactsByLetter:
 
         for contact in contact_list:
             contact.pop('active')
+            contact.pop('address')
+            contact.update({"contactId": contact.pop('_id')})
 
         dict_of_contact_list = {
             "contactsList": contact_list,

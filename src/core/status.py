@@ -1,6 +1,4 @@
-from enum import Enum
 
-
-class Status(Enum):
+class Status:
     success = '1001'
     error = '1004'

@@ -24,10 +24,10 @@ class RepositoryMongo(IMongo):
         return bool(int(update.modified_count))
 
     def find_one(self, _id: str) -> dict:
-        return self.collection.find_one({'_id': _id})
+        return self.collection.find_one({'_id': _id, 'active': True})
 
     def find_all(self) -> list:
         return list(self.collection.find({'active': True}))
 
     def find_by_letter(self, letter: str) -> list:
-        return list(self.collection.find({"firstName": {"$regex": f"^[{letter.upper()}{letter.lower()}]"}}))
+        return list(self.collection.find({"firstName": {"$regex": f"^[{letter.upper()}{letter.lower()}]"}, 'active': True}))

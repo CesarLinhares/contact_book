@@ -12,4 +12,4 @@ class UpdateContact:
 
     def update_contact(self, _id: str, updates: dict) -> dict:
         update = self.mongo_repository.update(_id, updates)
-        return self.update_status.get(update)
+        return {"status": self.update_status.get(update)}
