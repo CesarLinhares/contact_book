@@ -2,6 +2,7 @@
 from fastapi import APIRouter
 
 from src.core.contact_model import ContactModel
+from src.services.count_registers import Count
 from src.services.detail import Detail
 from src.services.list_all_contacts import ListAllContacts
 from src.services.list_contacts_by_letter import ListContactsByLetter
@@ -37,7 +38,7 @@ def lista_contact_by_letter(letter: str):
 
 @route.get("/count")
 def count_contacts_and_count_number_type_phone():
-    return {"Mensagem": f"Rota para exibir o número de contatos e números de telefones por tipo de telefone"}
+    return Count().countContactAndPhoneType()
 
 
 @route.put("/edit/{_id}")
