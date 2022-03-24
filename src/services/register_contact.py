@@ -30,7 +30,7 @@ class RegisterContact:
         update_mongo = self.mongo_repository.update(contact.get('_id'), {'active': True})
         return clean_redis and update_mongo
 
-    def register_contact(self, contact: dict):
+    def register_contact(self, contact: dict) -> dict:
         contact_to_register = self._contact_modeling(contact)
 
         contact_has_been_deleted = self.redis_repository.verify_if_exists(contact_to_register.get('_id'))
