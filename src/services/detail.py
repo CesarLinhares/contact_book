@@ -2,9 +2,9 @@ from src.repository.mongo_actions import RepositoryMongo
 
 
 class Detail:
-
+    repository_mogo = RepositoryMongo()
     def get_detail(self, _id: str):
-        response = RepositoryMongo().find_one(_id)
+        response = self.repository_mogo.find_one(_id)
         if response is None:
             return_json = {"status": "1004"}
         else:
