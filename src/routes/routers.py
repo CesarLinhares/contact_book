@@ -27,7 +27,8 @@ def contact_list():
 
 @route.get("/contact/{_id}")
 def contact_detail(_id):
-    return Detail().get_detail(str(_id))
+    detail_service = Detail()
+    return detail_service.get_detail(str(_id))
 
 
 @route.get("/contacts/{letter}")
@@ -38,7 +39,8 @@ def lista_contact_by_letter(letter: str):
 
 @route.get("/count")
 def count_contacts_and_count_number_type_phone():
-    return Count().countContactAndPhoneType()
+    count_service = Count()
+    return count_service.count_contact_and_phone_type()
 
 
 @route.put("/edit/{_id}")
@@ -49,5 +51,6 @@ def edit_contact(_id: str, updates: dict):
 
 @route.delete("/remove/{_id}")
 def remove_contact(_id):
-    return RemoveContact().deleted(str(_id))
+    remove_service = RemoveContact()
+    return remove_service.deleted(str(_id))
 

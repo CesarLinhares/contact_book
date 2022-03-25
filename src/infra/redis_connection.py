@@ -1,8 +1,10 @@
 from redis import Redis
+
+from src.core.interfaces_infra import IConnection
 from src.infra.connection_links import user
 
 
-class RedisConnection:
+class RedisConnection(IConnection):
     connection = None
     connection_link = user.get('redis_link')
 

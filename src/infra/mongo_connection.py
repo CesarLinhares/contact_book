@@ -1,8 +1,10 @@
 from pymongo import MongoClient
+
+from src.core.interfaces_infra import IConnection
 from src.infra.connection_links import user
 
 
-class MongoConnection:
+class MongoConnection(IConnection):
     connection = None
     connection_link = user.get('mongo_link')
 

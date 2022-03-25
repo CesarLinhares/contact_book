@@ -12,7 +12,7 @@ class ListAllContacts:
 
     def list_contacts(self) -> dict:
         contact_list = self.mongo_repository.find_all()
-        success = bool(len(contact_list))
+        success = bool(contact_list)
 
         for contact in contact_list:
             contact.pop('active')

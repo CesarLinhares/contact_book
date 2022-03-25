@@ -12,7 +12,7 @@ class ListContactsByLetter:
 
     def list_contacts(self, letter: str) -> dict:
         contact_list = self.mongo_repository.find_by_letter(letter.lower())
-        success = bool(len(contact_list))
+        success = bool(contact_list)
 
         for contact in contact_list:
             contact.pop('active')
