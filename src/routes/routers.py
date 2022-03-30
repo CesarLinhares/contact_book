@@ -1,56 +1,44 @@
 
 from fastapi import APIRouter
 
-from src.core.contact_model import ContactModel
-from src.services.count_registers import Count
-from src.services.detail import Detail
-from src.services.list_all_contacts import ListAllContacts
-from src.services.list_contacts_by_letter import ListContactsByLetter
-from src.services.register_contact import RegisterContact
-from src.services.remove_contact import RemoveContact
-from src.services.update_contact import UpdateContact
+from src.controller.controller import ContactController
+from src.core.validation.contact_model import ContactModel
+
 
 route = APIRouter(prefix="/v1")
 
 
 @route.post("/register")
 def register(contact: ContactModel):
-    service_register = RegisterContact()
-    return service_register.register_contact(contact.dict())
+    return ContactController.register(contact.dict())
 
 
 @route.get("/contacts")
 def contact_list():
-    list_service = ListAllContacts()
-    return list_service.list_contacts()
+    return ContactController.list_contacts()
 
 
 @route.get("/contact/{_id}")
 def contact_detail(_id):
-    detail_service = Detail()
-    return detail_service.get_detail(str(_id))
+    return ContactController.get_detail(str(_id))
 
 
 @route.get("/contacts/{letter}")
 def lista_contact_by_letter(letter: str):
-    list_service = ListContactsByLetter()
-    return list_service.list_contacts(letter)
+    return ContactController.list_contacts_by_letter(letter)
 
 
 @route.get("/count")
 def count_contacts_and_count_number_type_phone():
-    count_service = Count()
-    return count_service.count_contact_and_phone_type()
+    return ContactController.count_registers()
 
 
 @route.put("/edit/{_id}")
 def edit_contact(_id: str, updates: dict):
-    service_edit = UpdateContact()
-    return service_edit.update_contact(_id, updates)
+    return ContactController.update(_id, updates)
 
 
 @route.delete("/remove/{_id}")
 def remove_contact(_id):
-    remove_service = RemoveContact()
-    return remove_service.deleted(str(_id))
+    return ContactController.delete(str(_id))
 

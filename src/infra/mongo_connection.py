@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-from src.core.interfaces_infra import IConnection
+from src.core.interfaces.infrastructure.interface import IConnection
 from src.infra.connection_links import user
 
 

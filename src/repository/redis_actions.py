@@ -1,6 +1,6 @@
 from redis.client import Redis
 
-from src.core.interfaces_repository import IRedis
+from src.core.interfaces.repository.redis.interface import IRedis
 from src.infra.redis_connection import RedisConnection
 
 

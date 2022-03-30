@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from src.core.interfaces_repository import IMongo
+from src.core.interfaces.repository.mongodb.interface import IMongo
 from src.infra.mongo_connection import MongoConnection
 
 
