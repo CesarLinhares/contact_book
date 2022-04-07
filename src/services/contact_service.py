@@ -1,12 +1,12 @@
 from hashlib import md5
 
 from src.core.enumerator.status import Status
-from src.repository.mongo_actions import RepositoryMongo
+from src.repository.postgres_actions import RepositoryPostgres
 from src.repository.redis_actions import RepositoryRedis
 
 
 class ContactServices:
-    mongo_repository = RepositoryMongo()
+    mongo_repository = RepositoryPostgres()
     redis_repository = RepositoryRedis()
 
     status = {

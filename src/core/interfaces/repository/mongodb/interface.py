@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from src.core.interfaces.repository.interface import IRepository
 
 
-class IMongo(IRepository, ABC):
+class IPostgres(IRepository, ABC):
     @abstractmethod
     def update(self, _id: str, item: dict):
         pass

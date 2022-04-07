@@ -1,9 +1,9 @@
 from src.core.enumerator.status import Status
-from src.repository.mongo_actions import RepositoryMongo
+from src.repository.postgres_actions import RepositoryPostgres
 
 
 class ListService:
-    mongo_repository = RepositoryMongo()
+    mongo_repository = RepositoryPostgres()
 
     list_status = {
         True: Status.SUCCESS.value,
