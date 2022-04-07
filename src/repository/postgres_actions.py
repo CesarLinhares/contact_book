@@ -22,19 +22,7 @@ class RepositoryPostgres(IPostgres):
         pass
 
     def register(self, item: dict) -> bool:
-        '''
-        _id
-        firstName
-        lastName
-        email
-        phoneList
-        address
-        active
-
-        '''
-        print(item)
-
-        def _insert_phones(phone_list: List[dict]) -> str:
+        def _insert_phones_str(phone_list: List[dict]) -> str:
             insert_str = ''
             counter = 1
 
@@ -48,22 +36,62 @@ class RepositoryPostgres(IPostgres):
                 counter += 1
 
             return insert_str
-
-        sql_contacts = f'''
+        sql = f'''
         INSERT INTO contacts VALUES
         ('{item.get('_id')}', '{item.get('firstName')}', '{item.get('lastName')}', '{item.get('email')}', '{item.get('address')}', 
-        {_insert_phones(item.get('phoneList'))}, '{self._register_status.get(item.get('active'))}')
+        {_insert_phones_str(item.get('phoneList'))}, '{self._register_status.get(item.get('active'))}')
         '''
         try:
-            self.cursor.execute(sql_contacts)
+            self.cursor.execute(sql)
             self.connection.commit()
             return True
         except:
             return False
 
-    def update(self, _id: str, item: dict) -> bool:
-        update = self.collection.update_one({'_id': _id}, {'$set': item})
-        return bool(int(update.modified_count))
+    def update(self, _id: str, updates: dict) -> bool:
+        def _insert_updates_str(updates_dict):
+            insert_str = ''
+            counter = 1
+
+            for key, value in updates_dict.items():
+                if key == 'phoneList':
+                    counter_phone = 1
+                    phones_str = ''
+                    for phone in value:
+                        insert = f"phone{counter_phone} = \'{phone.get('number')}\', phone{counter_phone}_type = \'{phone.get('type')}\'"
+                        if counter < len(value):
+                            phones_str += insert + ', '
+                        else:
+                            phones_str += insert
+                        counter_phone += 1
+
+                    insert_str += phones_str
+                else:
+                    insert = f"{key.lower()} = \'{value}\'"
+                    if counter < len(updates_dict):
+                        insert_str += insert + ', '
+                    else:
+                        insert_str += insert
+
+                counter += 1
+
+            return insert_str
+
+        sql = f'''
+        UPDATE contacts
+        SET {_insert_updates_str(updates)}
+        WHERE _id = '{_id}'
+        '''
+        print(sql)
+        try:
+            self.cursor.execute(sql)
+            self.connection.commit()
+            return True
+        except Exception as error:
+            print(error.__class__)
+            return False
+
+
 
     def find_one(self, _id: str) -> dict:
         return self.collection.find_one({'_id': _id, 'active': True})

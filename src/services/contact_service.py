@@ -58,7 +58,7 @@ class ContactServices:
         return {"status": self.status.get(update)}
 
     def delete(self, _id: str):
-        active_false = self.mongo_repository.update(_id, {"active": False})
+        active_false = self.mongo_repository.update(_id, {"active": 0})
         insert_redis = self.redis_repository.register(_id)
         deletion_status = active_false and insert_redis
 
