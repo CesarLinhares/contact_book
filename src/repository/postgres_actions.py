@@ -3,7 +3,7 @@ from typing import List
 import psycopg2
 
 from src.core.enumerator.contact_status import ContactStatus
-from src.core.interfaces.repository.mongodb.interface import IPostgres
+from src.core.interfaces.repository.postgres.interface import IPostgres
 from src.infra.postgres_connection import PostgresConnection
 
 
@@ -31,9 +31,6 @@ class RepositoryPostgres(IPostgres):
 
         return contact_dict
 
-    def delete(self, _id: str) -> bool:
-        pass
-
     def register(self, item: dict) -> bool:
         def _insert_phones_str(phone_list: List[dict]) -> str:
             insert_str = ''
@@ -60,7 +57,6 @@ class RepositoryPostgres(IPostgres):
             all_fields = f"_id, firstname, lastname, email, address, {phone_fields_str} active"
             return all_fields
 
-
         sql = f'''
         INSERT INTO contacts
         ({_insert_fields(item.get('phoneList'))})
@@ -68,8 +64,8 @@ class RepositoryPostgres(IPostgres):
         ('{item.get('_id')}', '{item.get('firstName')}', '{item.get('lastName')}', '{item.get('email')}', '{item.get('address')}',
         {_insert_phones_str(item.get('phoneList'))}, '{1}')
         '''
+
         try:
-            print(sql)
             self.cursor.execute(sql)
             self.connection.commit()
             return True
@@ -121,7 +117,7 @@ class RepositoryPostgres(IPostgres):
             print(error.__class__)
             return False
 
-    def find_one(self, _id: str) -> dict:
+    def find_one(self, _id: str):
         sql = f"SELECT * FROM contacts WHERE _id = '{_id}' AND active = '{ContactStatus.ACTIVE.value}'"
         self.cursor.execute(sql)
         result = self.cursor.fetchall()
@@ -131,7 +127,21 @@ class RepositoryPostgres(IPostgres):
             return self._transform_row_to_dict(result[0])
 
     def find_all(self) -> list:
-        return list(self.collection.find({'active': True}))
+        sql = f"SELECT * FROM contacts WHERE active = '{ContactStatus.ACTIVE.value}'"
+        self.cursor.execute(sql)
+        result = self.cursor.fetchall()
+        if not result:
+            return []
+        else:
+            contacts_list = [self._transform_row_to_dict(row) for row in result]
+            return contacts_list
 
     def find_by_letter(self, letter: str) -> list:
-        return list(self.collection.find({"firstName": {"$regex": f"^[{letter.upper()}{letter.lower()}]"}, 'active': True}))
+        sql = f"SELECT * FROM contacts WHERE (firstname LIKE '{letter.upper()}%' OR firstname LIKE '{letter.lower()}%') AND active = '{ContactStatus.ACTIVE.value}'"
+        self.cursor.execute(sql)
+        result = self.cursor.fetchall()
+        if not result:
+            return []
+        else:
+            contacts_list = [self._transform_row_to_dict(row) for row in result]
+            return contacts_list

@@ -5,5 +5,9 @@ from src.core.interfaces.repository.interface import IRepository
 
 class IRedis(IRepository, ABC):
     @abstractmethod
+    def delete(self, _id: str):
+        pass
+
+    @abstractmethod
     def verify_if_exists(self, key: str):
         pass
