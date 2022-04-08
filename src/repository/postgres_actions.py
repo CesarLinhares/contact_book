@@ -2,6 +2,7 @@ from typing import List
 
 import psycopg2
 
+from src.core.enumerator.contact_status import ContactStatus
 from src.core.interfaces.repository.mongodb.interface import IPostgres
 from src.infra.postgres_connection import PostgresConnection
 
@@ -10,6 +11,25 @@ class RepositoryPostgres(IPostgres):
     connection_infra = PostgresConnection()
     connection: psycopg2.connect = connection_infra.get_connection()
     cursor = connection.cursor()
+
+    @staticmethod
+    def _transform_row_to_dict(contact: tuple) -> dict:
+        phone_list = []
+        for phone in range(5, 11, 2):
+            if contact[phone] is not None:
+                phone_list.append({'number': contact[phone], 'type': contact[phone + 1]})
+
+        contact_dict = {
+            "_id": contact[0],
+            "firstName": contact[1],
+            "lastName": contact[2],
+            "email": contact[3],
+            "address": contact[4],
+            "phoneList": phone_list,
+            "active": contact[11]
+        }
+
+        return contact_dict
 
     def delete(self, _id: str) -> bool:
         pass
@@ -102,7 +122,13 @@ class RepositoryPostgres(IPostgres):
             return False
 
     def find_one(self, _id: str) -> dict:
-        return self.collection.find_one({'_id': _id, 'active': True})
+        sql = f"SELECT * FROM contacts WHERE _id = '{_id}' AND active = '{ContactStatus.ACTIVE.value}'"
+        self.cursor.execute(sql)
+        result = self.cursor.fetchall()
+        if not result:
+            return
+        else:
+            return self._transform_row_to_dict(result[0])
 
     def find_all(self) -> list:
         return list(self.collection.find({'active': True}))
