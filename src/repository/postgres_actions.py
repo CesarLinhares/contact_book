@@ -1,7 +1,5 @@
-from pymongo import MongoClient
 from typing import List
-from pymongo.collection import Collection
-from pymongo.database import Database
+
 import psycopg2
 
 from src.core.interfaces.repository.mongodb.interface import IPostgres
@@ -12,11 +10,6 @@ class RepositoryPostgres(IPostgres):
     connection_infra = PostgresConnection()
     connection: psycopg2.connect = connection_infra.get_connection()
     cursor = connection.cursor()
-
-    _register_status = {
-        True: 1,
-        False: 0
-    }
 
     def delete(self, _id: str) -> bool:
         pass
@@ -36,16 +29,33 @@ class RepositoryPostgres(IPostgres):
                 counter += 1
 
             return insert_str
+
+        def _insert_fields(phone_list: List[dict]) -> str:
+            phone_fields_str = ''
+            counter = 1
+            for _ in phone_list:
+                insert = f"phone{counter}, phone{counter}_type,"
+                phone_fields_str += insert
+                counter += 1
+            all_fields = f"_id, firstname, lastname, email, address, {phone_fields_str} active"
+            return all_fields
+
+
         sql = f'''
-        INSERT INTO contacts VALUES
-        ('{item.get('_id')}', '{item.get('firstName')}', '{item.get('lastName')}', '{item.get('email')}', '{item.get('address')}', 
-        {_insert_phones_str(item.get('phoneList'))}, '{self._register_status.get(item.get('active'))}')
+        INSERT INTO contacts
+        ({_insert_fields(item.get('phoneList'))})
+        VALUES
+        ('{item.get('_id')}', '{item.get('firstName')}', '{item.get('lastName')}', '{item.get('email')}', '{item.get('address')}',
+        {_insert_phones_str(item.get('phoneList'))}, '{1}')
         '''
         try:
+            print(sql)
             self.cursor.execute(sql)
             self.connection.commit()
             return True
-        except:
+        except Exception as error:
+            self.connection.rollback()
+            print(error.__class__)
             return False
 
     def update(self, _id: str, updates: dict) -> bool:
@@ -90,8 +100,6 @@ class RepositoryPostgres(IPostgres):
         except Exception as error:
             print(error.__class__)
             return False
-
-
 
     def find_one(self, _id: str) -> dict:
         return self.collection.find_one({'_id': _id, 'active': True})

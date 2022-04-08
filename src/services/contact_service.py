@@ -1,5 +1,6 @@
 from hashlib import md5
 
+from src.core.enumerator.contact_status import ContactStatus
 from src.core.enumerator.status import Status
 from src.repository.postgres_actions import RepositoryPostgres
 from src.repository.redis_actions import RepositoryRedis
@@ -22,7 +23,7 @@ class ContactServices:
         )
         _id = md5(string_to_make_id.encode()).hexdigest()
         contact_modeled = contact
-        contact_modeled.update({'_id': str(_id), 'active': True})
+        contact_modeled.update({'_id': str(_id), 'active': ContactStatus.ACTIVE.value})
         return contact_modeled
 
     @staticmethod
@@ -58,7 +59,7 @@ class ContactServices:
         return {"status": self.status.get(update)}
 
     def delete(self, _id: str):
-        active_false = self.mongo_repository.update(_id, {"active": 0})
+        active_false = self.mongo_repository.update(_id, {"active": ContactStatus.INACTIVE.value})
         insert_redis = self.redis_repository.register(_id)
         deletion_status = active_false and insert_redis
 
