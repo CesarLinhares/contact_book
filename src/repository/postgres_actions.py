@@ -31,38 +31,70 @@ class RepositoryPostgres(IPostgres):
 
         return contact_dict
 
-    def register(self, item: dict) -> bool:
-        def _insert_phones_str(phone_list: List[dict]) -> str:
-            insert_str = ''
-            counter = 1
+    @staticmethod
+    def _insert_phones_str(phone_list: List[dict]) -> str:
+        insert_str = ''
+        counter = 1
 
-            for phone in phone_list:
-                insert = f"\'{phone.get('number')}\', \'{phone.get('type')}\'"
-                if counter < len(phone_list):
+        for phone in phone_list:
+            insert = f"\'{phone.get('number')}\', \'{phone.get('type')}\'"
+            if counter < len(phone_list):
+                insert_str += insert + ', '
+            else:
+                insert_str += insert
+
+            counter += 1
+
+        return insert_str
+
+    @staticmethod
+    def _insert_phone_fields_str(phone_list: List[dict]) -> str:
+        phone_fields_str = ''
+        counter = 1
+        for _ in phone_list:
+            insert = f"phone{counter}, phone{counter}_type,"
+            phone_fields_str += insert
+            counter += 1
+        all_fields = f"_id, firstname, lastname, email, address, {phone_fields_str} active"
+
+        return all_fields
+
+    @staticmethod
+    def _insert_updates_str(updates_dict: dict) -> str:
+        insert_str = ''
+        counter = 1
+
+        for key, value in updates_dict.items():
+            if key == 'phoneList':
+                counter_phone = 1
+                phones_str = ''
+                for phone in value:
+                    insert = f"phone{counter_phone} = \'{phone.get('number')}\', phone{counter_phone}_type = \'{phone.get('type')}\'"
+                    if counter < len(value):
+                        phones_str += insert + ', '
+                    else:
+                        phones_str += insert
+                    counter_phone += 1
+
+                insert_str += phones_str
+            else:
+                insert = f"{key.lower()} = \'{value}\'"
+                if counter < len(updates_dict):
                     insert_str += insert + ', '
                 else:
                     insert_str += insert
 
-                counter += 1
+            counter += 1
 
-            return insert_str
+        return insert_str
 
-        def _insert_fields(phone_list: List[dict]) -> str:
-            phone_fields_str = ''
-            counter = 1
-            for _ in phone_list:
-                insert = f"phone{counter}, phone{counter}_type,"
-                phone_fields_str += insert
-                counter += 1
-            all_fields = f"_id, firstname, lastname, email, address, {phone_fields_str} active"
-            return all_fields
-
+    def register(self, item: dict) -> bool:
         sql = f'''
         INSERT INTO contacts
-        ({_insert_fields(item.get('phoneList'))})
+        ({self._insert_phone_fields_str(item.get('phoneList'))})
         VALUES
         ('{item.get('_id')}', '{item.get('firstName')}', '{item.get('lastName')}', '{item.get('email')}', '{item.get('address')}',
-        {_insert_phones_str(item.get('phoneList'))}, '{1}')
+        {self._insert_phones_str(item.get('phoneList'))}, '{1}')
         '''
 
         try:
@@ -75,40 +107,12 @@ class RepositoryPostgres(IPostgres):
             return False
 
     def update(self, _id: str, updates: dict) -> bool:
-        def _insert_updates_str(updates_dict):
-            insert_str = ''
-            counter = 1
-
-            for key, value in updates_dict.items():
-                if key == 'phoneList':
-                    counter_phone = 1
-                    phones_str = ''
-                    for phone in value:
-                        insert = f"phone{counter_phone} = \'{phone.get('number')}\', phone{counter_phone}_type = \'{phone.get('type')}\'"
-                        if counter < len(value):
-                            phones_str += insert + ', '
-                        else:
-                            phones_str += insert
-                        counter_phone += 1
-
-                    insert_str += phones_str
-                else:
-                    insert = f"{key.lower()} = \'{value}\'"
-                    if counter < len(updates_dict):
-                        insert_str += insert + ', '
-                    else:
-                        insert_str += insert
-
-                counter += 1
-
-            return insert_str
-
         sql = f'''
         UPDATE contacts
-        SET {_insert_updates_str(updates)}
+        SET {self._insert_updates_str(updates)}
         WHERE _id = '{_id}'
         '''
-        print(sql)
+
         try:
             self.cursor.execute(sql)
             self.connection.commit()
