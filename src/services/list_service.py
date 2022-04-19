@@ -11,13 +11,13 @@ class ListService:
     }
 
     def list_contacts(self) -> dict:
-        contact_list = self.mongo_repository.find_all()
+        contact_list = self.mongo_repository.find_all_contacts()
         success = bool(contact_list)
 
         for contact in contact_list:
             contact.pop('active')
             contact.pop('address')
-            contact.update({"contactId": contact.pop('_id')})
+            contact.update_a_contact({"contactId": contact.pop('_id')})
 
         dict_of_contact_list = {
             "contactsList": contact_list,
@@ -26,13 +26,13 @@ class ListService:
         return dict_of_contact_list
 
     def list_contacts_by_letter(self, letter: str) -> dict:
-        contact_list = self.mongo_repository.find_by_letter(letter.lower())
+        contact_list = self.mongo_repository.find_contacts_by_letter(letter.lower())
         success = bool(contact_list)
 
         for contact in contact_list:
             contact.pop('active')
             contact.pop('address')
-            contact.update({"contactId": contact.pop('_id')})
+            contact.update_a_contact({"contactId": contact.pop('_id')})
 
         dict_of_contact_list = {
             "contactsList": contact_list,
@@ -41,7 +41,7 @@ class ListService:
         return dict_of_contact_list
 
     def count_registers(self):
-        response = self.mongo_repository.find_all()
+        response = self.mongo_repository.find_all_contacts()
 
         num_contact = []
         num_type_phones = []

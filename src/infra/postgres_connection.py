@@ -12,8 +12,8 @@ class PostgresConnection(IConnection):
             cls.connection = psycopg2.connect(
                 host='localhost',
                 database='contacts',
-                user='postgres',
-                password='joaoagbo'
+                user='user',
+                password='admin'
             )
 
         return cls.connection

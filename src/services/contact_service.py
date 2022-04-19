@@ -35,17 +35,17 @@ class ContactServices:
         return return_dict
 
     def _update_deleted_contact(self, contact: dict) -> bool:
-        clean_redis = self.redis_repository.delete(contact.get('_id'))
-        update_mongo = self.mongo_repository.update(contact.get('_id'), contact)
+        clean_redis = self.redis_repository.remove_from_cache(contact.get('_id'))
+        update_mongo = self.mongo_repository.update_a_contact(contact.get('_id'), contact)
         return clean_redis and update_mongo
 
     def register(self, contact: dict) -> dict:
         contact_to_register = self._contact_modeling(contact)
 
-        contact_has_been_deleted = self.redis_repository.verify_if_exists(contact_to_register.get('_id'))
+        contact_has_been_deleted = self.redis_repository.verify_if_is_cached(contact_to_register.get('_id'))
         options_to_contact_deleted = {
             True: lambda x: self._update_deleted_contact(x),
-            False: lambda x: self.mongo_repository.register(x)
+            False: lambda x: self.mongo_repository.register_a_contact(x)
         }
         register = options_to_contact_deleted.get(contact_has_been_deleted)
         try:
@@ -55,18 +55,18 @@ class ContactServices:
             return {'status': self.status.get(False)}
 
     def update(self, _id: str, updates: dict) -> dict:
-        update = self.mongo_repository.update(_id, updates)
+        update = self.mongo_repository.update_a_contact(_id, updates)
         return {"status": self.status.get(update)}
 
     def delete(self, _id: str):
-        active_false = self.mongo_repository.update(_id, {"active": ContactStatus.INACTIVE.value})
-        insert_redis = self.redis_repository.register(_id)
+        active_false = self.mongo_repository.update_a_contact(_id, {"active": ContactStatus.INACTIVE.value})
+        insert_redis = self.redis_repository.register_a_contact(_id)
         deletion_status = active_false and insert_redis
 
         return {"status": self.status.get(deletion_status)}
 
     def get_detail(self, _id: str):
-        response = self.mongo_repository.find_one(_id)
+        response = self.mongo_repository.find_one_contact(_id)
 
         error_option = {
             True: lambda: {"status": Status.ERROR.value},

@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
 
-class IRepository(ABC):
+class IDataBase(ABC):
     connection: any
 
     @abstractmethod
-    def register(self, item: any):
+    def register_a_contact(self, item: any):
         pass
