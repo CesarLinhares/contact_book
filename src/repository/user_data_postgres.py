@@ -7,7 +7,7 @@ from src.core.interfaces.repository.user_data.interface import IUserData
 from src.infra.postgres_connection import PostgresConnection
 
 
-class RepositoryPostgres(IUserData):
+class UserDataRepository(IUserData):
     connection_infra = PostgresConnection()
     connection: psycopg2.connect = connection_infra.get_connection()
     cursor = connection.cursor()

@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from src.core.interfaces.repository.interface import IDataBase
 
 
-class IDeleteCache(IDataBase, ABC):
+class IDeletedUser(IDataBase, ABC):
     @abstractmethod
     def remove_from_cache(self, _id: str):
         pass

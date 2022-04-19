@@ -2,11 +2,12 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 
+from src.core.enumerator.contact_status import ContactStatus
 from src.core.interfaces.repository.user_data.interface import IUserData
 from src.infra.mongo_connection import MongoConnection
 
 
-class RepositoryMongo(IUserData):
+class UserDataRepository(IUserData):
     connection_infra = MongoConnection()
     connection: MongoClient = connection_infra.get_connection()
     database: Database = connection.contact_book
@@ -24,10 +25,10 @@ class RepositoryMongo(IUserData):
         return bool(int(update.modified_count))
 
     def find_one_contact(self, _id: str) -> dict:
-        return self.collection.find_one({'_id': _id, 'active': True})
+        return self.collection.find_one({'_id': _id, 'active': ContactStatus.ACTIVE.value})
 
     def find_all_contacts(self) -> list:
-        return list(self.collection.find({'active': True}))
+        return list(self.collection.find({'active': ContactStatus.ACTIVE.value}))
 
     def find_contacts_by_letter(self, letter: str) -> list:
-        return list(self.collection.find({"firstName": {"$regex": f"^[{letter.upper()}{letter.lower()}]"}, 'active': True}))
+        return list(self.collection.find({"firstName": {"$regex": f"^[{letter.upper()}{letter.lower()}]"}, 'active': ContactStatus.ACTIVE.value}))

@@ -1,10 +1,10 @@
 from redis.client import Redis
 
-from src.core.interfaces.repository.deleted_contact_cache.interface import IDeleteCache
+from src.core.interfaces.repository.deleted_contact_cache.interface import IDeletedUser
 from src.infra.redis_connection import RedisConnection
 
 
-class RepositoryRedis(IDeleteCache):
+class DeletedUserRepository(IDeletedUser):
     connection_infra = RedisConnection()
     connection: Redis = connection_infra.get_connection()
 
